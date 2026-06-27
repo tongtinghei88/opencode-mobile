@@ -1,17 +1,36 @@
 # opencode-mobile-fork-mainline Handoff
 
-## ⏯️ 上次做到哪
+## ⏯️ 上次做到哪（2026-06-27 — MVP readiness sprint PASS + pushed）
 
-- `web-app-mainline` 已完成收工同步，最新 HEAD 是 `e21b33789d76c0201ef59a2448274bb658b7abfe`。
-- 最近完成的是 `Add web readonly connection diagnostics`，只修改了 `packages/web-readonly-status/src/App.tsx` 和 `packages/web-readonly-status/src/styles.css`。
-- 這個 commit 已經 push 到 user fork 的 `origin/web-app-mainline`，`upstream` 沒有被推送。
-- 目前 repo 工作樹是乾淨的。
+- Final label: `WEB_READONLY_STATUS_FAST_TRACK_MVP_READINESS_PUSHED`
+- Branch: `web-app-mainline`
+- HEAD: `c8747b5508d87630da470652ce7a2aebf819629d` (`Polish web readonly MVP readiness`)
+- Push: `origin/web-app-mainline` at `c8747b5`. `upstream` not pushed.
+- Working tree: clean.
+- Production browser sanity PASS (desktop + tablet + mobile).
+
+### What changed
+
+Files modified (all under `packages/web-readonly-status`):
+- `src/App.tsx` — added LAN readiness panel (host/port/endpoint/4 notes).
+- `src/styles.css` — `.lanReadiness`/`.lanNotes` styles; `card header flex-wrap`; responsive 3-col LAN dl at 760px+.
+- `README.md` — LAN caveat, fast local run, production preview guidance, safety-boundary warning.
+- `SAFETY_CHECKLIST.md` — host/IP/port change policy; browser sanity requirement.
+
+Safety boundary unchanged: only `GET http://192.168.50.202:8790/api/local/v0/summary`, `credentials:"omit"`.
 
 ## ➡️ 下一步
 
-- 延續 `web-app-mainline` 做下一個 web MVP 需求。
-- 若要再動 `packages/web-readonly-status`，先保持 read-only 邊界不變，再做 production build / typecheck。
-- 若要做更大功能，先確認是否仍需保持 browser-only、read-only、單一 summary endpoint 的約束。
+- **Immediate next task (interrupted this session):** create annotated tag `web-readonly-status-mvp-v0.1.0` at `c8747b5` and push to `origin`.
+  - Tag message: `Web Read-Only Status MVP v0.1.0`
+  - No source change needed — tag only.
+  - Dry-run first: `git push --dry-run origin web-readonly-status-mvp-v0.1.0`
+  - Then: `git push origin web-readonly-status-mvp-v0.1.0`
+  - Write release tag report to `G:\我的雲端硬碟\Codex-Work\opencode app\reports\web-readonly-status-mvp-v0.1.0-release-tag.md`
+  - Final label on success: `WEB_READONLY_STATUS_MVP_V0_1_0_TAGGED`
+- After tagging: `PLAN_MVP_RELEASE_CHECKPOINT` → plan next web MVP feature.
+- Any change to `packages/web-readonly-status` must preserve the read-only / browser-only / single-endpoint boundary.
+- Read this handoff before next session.
 
 ## 📌 必讀 handoff
 
