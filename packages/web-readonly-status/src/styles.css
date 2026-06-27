@@ -105,6 +105,33 @@ dt {
   color: #113250;
 }
 
+.diagnosticsPanel {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(18, 48, 72, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.diagnosticsRow {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.diagnosticPill {
+  margin-top: 0.3rem;
+}
+
+.diagnosticValue {
+  margin: 0.25rem 0 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #173b59;
+  overflow-wrap: anywhere;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -186,9 +213,22 @@ dt {
   color: #1e6d34;
 }
 
-.pill-error {
+.pill-error,
+.pill-unreachable,
+.pill-failed-closed {
   background: #ffd8d5;
   color: #9b1f19;
+}
+
+.pill-not-checked,
+.pill-checking {
+  background: #fff0c4;
+  color: #8a5b00;
+}
+
+.pill-connected {
+  background: #d8f1db;
+  color: #1e6d34;
 }
 
 dl {
@@ -231,6 +271,10 @@ dd {
   margin-bottom: 0;
 }
 
+.errorMeta {
+  margin-top: 1rem;
+}
+
 @media (min-width: 760px) {
   .shell {
     width: min(1180px, calc(100% - 3rem));
@@ -239,6 +283,10 @@ dd {
 
   .hero {
     padding: 2rem;
+  }
+
+  .diagnosticsRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .grid {

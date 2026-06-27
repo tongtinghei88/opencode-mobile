@@ -9,6 +9,18 @@ import {
 } from "./adapter/realAdapterClient";
 
 type LoadState = "idle" | "loading" | "ready" | "error";
+type ConnectionStatus =
+  | "not-checked"
+  | "checking"
+  | "connected"
+  | "unreachable"
+  | "failed-closed";
+
+interface DiagnosticsSnapshot {
+  checkedAt: string | null;
+  details: string;
+  status: ConnectionStatus;
+}
 
 function formatBoolean(value: boolean | null): string {
   if (value === true) {
@@ -30,30 +42,77 @@ function formatTagCount(value: number | null): string {
 
 function formatTimestamp(value: string | null): string {
   if (!value) {
-    return "Not refreshed yet";
+    return "Not checked yet";
   }
   const date = new Date(value);
   return Number.isNaN(date.valueOf()) ? value : date.toLocaleString();
+}
+
+function getConnectionLabel(status: ConnectionStatus): string {
+  switch (status) {
+    case "not-checked":
+      return "Not checked";
+    case "checking":
+      return "Checking";
+    case "connected":
+      return "Connected";
+    case "unreachable":
+      return "Unreachable";
+    case "failed-closed":
+      return "Failed closed";
+  }
+}
+
+function classifyConnectionFailure(error: unknown): DiagnosticsSnapshot {
+  const message =
+    error instanceof Error ? error.message : "Unknown read-only failure";
+  const checkedAt = new Date().toISOString();
+  const isUnreachable =
+    error instanceof TypeError ||
+    /failed to fetch|networkerror|load failed/i.test(message);
+
+  return {
+    checkedAt,
+    details: message,
+    status: isUnreachable ? "unreachable" : "failed-closed",
+  };
 }
 
 function App() {
   const [loadState, setLoadState] = useState<LoadState>("idle");
   const [summary, setSummary] = useState<RealAdapterSummary | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [lastRefreshedAt, setLastRefreshedAt] = useState<string | null>(null);
+  const [diagnostics, setDiagnostics] = useState<DiagnosticsSnapshot>({
+    checkedAt: null,
+    details: "No request has been sent yet.",
+    status: "not-checked",
+  });
 
   async function refreshSummary(): Promise<void> {
     try {
       setLoadState("loading");
       setErrorMessage(null);
+      setDiagnostics({
+        checkedAt: diagnostics.checkedAt,
+        details:
+          "Sending one approved read-only summary request to the local adapter.",
+        status: "checking",
+      });
       assertRealAdapterSummaryUrl();
       const nextSummary = await fetchRealAdapterSummary();
+      const checkedAt = new Date().toISOString();
       setSummary(nextSummary);
-      setLastRefreshedAt(new Date().toISOString());
+      setDiagnostics({
+        checkedAt,
+        details:
+          "Adapter summary loaded successfully from the approved endpoint.",
+        status: "connected",
+      });
       setLoadState("ready");
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unknown error");
-      setLastRefreshedAt(new Date().toISOString());
+      const failure = classifyConnectionFailure(error);
+      setErrorMessage(failure.details);
+      setDiagnostics(failure);
       setLoadState("error");
     }
   }
@@ -75,6 +134,36 @@ function App() {
           <span className="boundary-label">Allowed endpoint</span>
           <code>{REAL_ADAPTER_SUMMARY_URL}</code>
         </div>
+        <section className="diagnosticsPanel" aria-label="Connection diagnostics">
+          <div className="diagnosticsRow">
+            <div>
+              <p className="boundary-label">Connection status</p>
+              <span
+                className={`pill diagnosticPill pill-${diagnostics.status}`}
+              >
+                {getConnectionLabel(diagnostics.status)}
+              </span>
+            </div>
+            <div>
+              <p className="boundary-label">Last checked</p>
+              <p className="diagnosticValue">
+                {formatTimestamp(diagnostics.checkedAt)}
+              </p>
+            </div>
+          </div>
+          <div className="diagnosticsRow">
+            <div>
+              <p className="boundary-label">Diagnostics detail</p>
+              <p className="diagnosticValue">{diagnostics.details}</p>
+            </div>
+            <div>
+              <p className="boundary-label">Network action</p>
+              <p className="diagnosticValue">
+                Manual refresh is the only repeat request action.
+              </p>
+            </div>
+          </div>
+        </section>
         <div className="toolbar">
           <button
             className="refreshButton"
@@ -87,7 +176,7 @@ function App() {
             {loadState === "loading" ? "Refreshing..." : "Refresh status"}
           </button>
           <p className="timestamp">
-            Last refreshed: {formatTimestamp(lastRefreshedAt)}
+            Last checked: {formatTimestamp(diagnostics.checkedAt)}
           </p>
         </div>
       </section>
@@ -96,7 +185,9 @@ function App() {
         <article className="card accent">
           <header>
             <h2>Adapter</h2>
-            <span className={`pill pill-${loadState}`}>{loadState}</span>
+            <span className={`pill pill-${diagnostics.status}`}>
+              {getConnectionLabel(diagnostics.status)}
+            </span>
           </header>
           <dl>
             <div>
@@ -157,6 +248,20 @@ function App() {
         <section className="errorPanel" role="alert">
           <h2>Adapter request failed</h2>
           <p>{errorMessage}</p>
+          <dl className="errorMeta">
+            <div>
+              <dt>Connection status</dt>
+              <dd>{getConnectionLabel(diagnostics.status)}</dd>
+            </div>
+            <div>
+              <dt>Endpoint</dt>
+              <dd className="mono">{REAL_ADAPTER_SUMMARY_URL}</dd>
+            </div>
+            <div>
+              <dt>Last checked</dt>
+              <dd>{formatTimestamp(diagnostics.checkedAt)}</dd>
+            </div>
+          </dl>
           <p>
             This page should fail closed and must not fall back to any other
             endpoint.
