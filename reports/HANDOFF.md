@@ -7,8 +7,8 @@
 - **Recommendation:** `USE_DAILY_LAUNCH_PACK_FOR_ROUTINE_ACCESS`
 - **Authoritative repo:** `C:\Codex-Recovery\opencode-mobile-fork-mainline`
 - **Branch:** `web-app-mainline`
-- **HEAD:** `9d17862d5d6b7311b065c4f67c93c588cfcb4cfd`
-- **Origin:** `origin/web-app-mainline` matches local HEAD.
+- **v0.2.0 tag target / app commit:** `9d17862d5d6b7311b065c4f67c93c588cfcb4cfd`
+- **Origin:** `origin/web-app-mainline` is synced through the shutdown handoff commits after this note.
 - **Release tag:** `web-readonly-status-mvp-v0.2.0` pushed to `origin`; peeled target is `9d17862d5d6b7311b065c4f67c93c588cfcb4cfd`.
 - **Previous release tag:** `web-readonly-status-mvp-v0.1.0` remains at `c8747b5508d87630da470652ce7a2aebf819629d`.
 - **Daily Launch Pack:** implemented, pushed, real-device checked, and tagged. Android and iPhone both passed page load, CONNECTED status, manual refresh, and visual layout checks at `http://192.168.50.202:4173/`.
