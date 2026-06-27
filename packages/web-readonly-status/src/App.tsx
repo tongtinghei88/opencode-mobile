@@ -181,6 +181,36 @@ function App() {
         </div>
       </section>
 
+      <section className="lanReadiness" aria-label="LAN readiness">
+        <h2>LAN readiness</h2>
+        <dl>
+          <div>
+            <dt>Required adapter host</dt>
+            <dd>192.168.50.202</dd>
+          </div>
+          <div>
+            <dt>Required adapter port</dt>
+            <dd>8790</dd>
+          </div>
+          <div>
+            <dt>Approved endpoint</dt>
+            <dd className="mono">{REAL_ADAPTER_SUMMARY_URL}</dd>
+          </div>
+        </dl>
+        <ul className="lanNotes">
+          <li>This PC must hold IP address 192.168.50.202.</li>
+          <li>The read-only adapter must be listening on port 8790.</li>
+          <li>
+            Changing this host or port is a safety-boundary change and requires
+            a separate review.
+          </li>
+          <li>
+            If the adapter is unreachable, this page fails closed — no fallback
+            endpoint is used.
+          </li>
+        </ul>
+      </section>
+
       <section className="grid" aria-label="Read-only adapter summary">
         <article className="card accent">
           <header>

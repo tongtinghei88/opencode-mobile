@@ -35,15 +35,46 @@ This package must preserve these rules:
 - No chat, agent, terminal, git, provider, or filesystem UI.
 - No server code.
 
-## Install Dependencies
+## LAN Caveat — Hard-Coded Host and Port
 
-From the monorepo root:
+The approved endpoint is hard-coded in source:
+
+```
+http://192.168.50.202:8790/api/local/v0/summary
+```
+
+**Before opening this page, verify:**
+
+- This PC currently holds IP address `192.168.50.202`.
+- The read-only local adapter is listening on port `8790`.
+
+**Warning:** Changing the approved host or port is a **safety-boundary change** that
+requires a separate review and cannot be done by editing only `realAdapter.ts` without
+also rerunning the full production browser sanity check.
+
+## Fast Local Run
+
+Install dependencies once from the monorepo root:
 
 ```bash
 bun install
 ```
 
-This repo uses Bun workspaces at the root, so package dependencies are expected to be installed from the monorepo root rather than inside this folder alone.
+Start the adapter (read-only, no opencode serve needed):
+
+```bash
+HOST=192.168.50.202 PORT=8790 node /path/to/opencode-local-adapter-spike3O/server.mjs
+```
+
+Build and preview in two commands:
+
+```bash
+bun run --cwd packages/web-readonly-status build
+bun run --cwd packages/web-readonly-status preview
+```
+
+Open `http://localhost:4173` in a browser. The page connects to
+`http://192.168.50.202:8790/api/local/v0/summary` on load.
 
 ## Useful Commands
 
@@ -81,9 +112,13 @@ To preview the built files with Vite's production preview server:
 bun run --cwd packages/web-readonly-status preview
 ```
 
+This starts a preview server on `http://localhost:4173` by default.
+
 If you want to serve the built files with another static server, build first and then serve the `dist` directory with your preferred static host.
 
-This package does not claim Vite dev-server browser sanity because Vite dev mode injects HMR-related behavior that is outside the production-only sanity target.
+**Use production preview (not dev server) for all browser sanity checks.**
+This package does not use Vite dev-server for sanity because Vite dev mode injects
+HMR-related behavior that is outside the production-only sanity target.
 
 ## Expected Behavior
 
