@@ -65,8 +65,8 @@ function App() {
   return (
     <main className="shell">
       <section className="hero">
-        <p className="eyebrow">Spike 3P browser milestone</p>
-        <h1>Real OpenCode Adapter - Read Only</h1>
+        <p className="eyebrow">Read-only local adapter view</p>
+        <h1>OpenCode Read-Only Status</h1>
         <p className="lede">
           This page is limited to one approved browser request and displays
           status only.
