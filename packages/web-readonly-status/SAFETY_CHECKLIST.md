@@ -29,6 +29,9 @@ Use this checklist before expanding or shipping changes in `packages/web-readonl
 
 - Review the diff and confirm changes stay under `packages/web-readonly-status`.
 - Run production build and typecheck if dependencies are available.
+- For daily use, start only with `scripts/start-readonly-status.ps1`, check with `scripts/status-readonly-status.ps1`, and stop with `scripts/stop-readonly-status.ps1`.
+- Confirm launch logs and PID files stay outside the repo under `%TEMP%\web-readonly-status\`.
+- Confirm the launch scripts do not start `opencode serve`, do not add firewall rules, and do not modify backend repo or adapter code.
 - **After any UI change or network-boundary change, always rerun production browser sanity** using production build + preview/static serving (not the Vite dev server).
 - If the adapter request fails, confirm the app fails closed and does not fall back to another endpoint.
 - Confirm no `@vite/client`, React Refresh, HMR, `WebSocket`, `EventSource`, `setInterval`, `localStorage`, `sessionStorage`, or executable `:4096` references appear in the built artifacts.

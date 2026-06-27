@@ -54,6 +54,23 @@ also rerunning the full production browser sanity check.
 
 ## Fast Local Run
 
+Daily use on Windows PowerShell 5.1:
+
+```powershell
+.\packages\web-readonly-status\scripts\start-readonly-status.ps1
+.\packages\web-readonly-status\scripts\status-readonly-status.ps1
+.\packages\web-readonly-status\scripts\stop-readonly-status.ps1
+```
+
+The daily launch pack serves the app at `http://192.168.50.202:4173/` and uses
+the approved adapter endpoint
+`http://192.168.50.202:8790/api/local/v0/summary`. It requires this PC to hold
+IP `192.168.50.202`, requires ports `4173` and `8790`, stores PID files and logs
+under `%TEMP%\web-readonly-status\`, adds no firewall rules, does not start
+`opencode serve`, and does not modify backend repo or adapter code.
+
+See `LAUNCH_PACK.md` for daily commands and troubleshooting.
+
 Install dependencies once from the monorepo root:
 
 ```bash
