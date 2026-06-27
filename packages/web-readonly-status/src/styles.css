@@ -1,0 +1,248 @@
+:root {
+  color-scheme: light;
+  font-family:
+    "IBM Plex Sans",
+    "Segoe UI",
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  background:
+    radial-gradient(circle at top, rgba(214, 232, 255, 0.9), transparent 42%),
+    linear-gradient(180deg, #f3efe2 0%, #f7f8fc 48%, #e4edf9 100%);
+  color: #123048;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+code,
+.mono {
+  font-family:
+    "IBM Plex Mono",
+    "Cascadia Code",
+    monospace;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.shell {
+  width: min(1080px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.hero {
+  padding: 1.5rem;
+  border: 1px solid rgba(18, 48, 72, 0.12);
+  border-radius: 28px;
+  background: rgba(255, 252, 245, 0.86);
+  box-shadow: 0 18px 48px rgba(33, 74, 109, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #8e4c2e;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 4.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.lede {
+  max-width: 44rem;
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+  color: #33536d;
+}
+
+.boundary {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(215, 229, 244, 0.8);
+}
+
+.boundary-label,
+.subtle,
+.timestamp,
+dt {
+  font-size: 0.85rem;
+  color: #5a7388;
+}
+
+.boundary code {
+  display: inline-block;
+  overflow-wrap: anywhere;
+  font-size: 0.92rem;
+  color: #113250;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+.refreshButton {
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0a5d94 0%, #123048 100%);
+  color: #f8fbff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(10, 93, 148, 0.24);
+}
+
+.refreshButton:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.card {
+  padding: 1.25rem;
+  border: 1px solid rgba(18, 48, 72, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 14px 32px rgba(18, 48, 72, 0.1);
+}
+
+.card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.card h2,
+.errorPanel h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.accent {
+  background:
+    linear-gradient(180deg, rgba(213, 236, 255, 0.92), rgba(255, 255, 255, 0.92));
+}
+
+.warning {
+  background:
+    linear-gradient(180deg, rgba(255, 241, 220, 0.92), rgba(255, 255, 255, 0.92));
+}
+
+.pill {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pill-idle,
+.pill-loading {
+  background: #fff0c4;
+  color: #8a5b00;
+}
+
+.pill-ready {
+  background: #d8f1db;
+  color: #1e6d34;
+}
+
+.pill-error {
+  background: #ffd8d5;
+  color: #9b1f19;
+}
+
+dl {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+dt {
+  margin-bottom: 0.2rem;
+}
+
+dd {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.guardList {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #25445b;
+}
+
+.guardList li + li {
+  margin-top: 0.6rem;
+}
+
+.errorPanel {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(155, 31, 25, 0.18);
+  border-radius: 24px;
+  background: rgba(255, 241, 241, 0.9);
+  color: #7f241c;
+}
+
+.errorPanel p {
+  margin-bottom: 0;
+}
+
+@media (min-width: 760px) {
+  .shell {
+    width: min(1180px, calc(100% - 3rem));
+    padding-top: 3rem;
+  }
+
+  .hero {
+    padding: 2rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}
