@@ -264,6 +264,45 @@ function Get-ManagedProcessInfo {
   return Get-CimInstance Win32_Process -Filter "ProcessId = $ProcessIdValue" -ErrorAction SilentlyContinue
 }
 
+function Get-DescendantProcesses {
+  param(
+    [Parameter(Mandatory = $true)]
+    [int]$ParentProcessIdValue
+  )
+
+  $all = @()
+  $children = Get-CimInstance Win32_Process -Filter "ParentProcessId = $ParentProcessIdValue" -ErrorAction SilentlyContinue
+  foreach ($child in $children) {
+    $all += Get-DescendantProcesses -ParentProcessIdValue $child.ProcessId
+    $all += $child
+  }
+
+  return $all
+}
+
+function Get-OpenCodeExecutablePath {
+  $wrapperCommand = Get-Command opencode -ErrorAction SilentlyContinue
+  if ($wrapperCommand) {
+    $wrapperDir = Split-Path -Parent $wrapperCommand.Source
+    $candidate = Join-Path $wrapperDir "node_modules\opencode-ai\bin\opencode.exe"
+    if (Test-Path -LiteralPath $candidate) {
+      return $candidate
+    }
+  }
+
+  $directCommand = Get-Command opencode.exe -ErrorAction SilentlyContinue
+  if ($directCommand -and (Test-Path -LiteralPath $directCommand.Source)) {
+    return $directCommand.Source
+  }
+
+  $knownCandidate = "C:\Users\PC\AppData\Roaming\npm\node_modules\opencode-ai\bin\opencode.exe"
+  if (Test-Path -LiteralPath $knownCandidate) {
+    return $knownCandidate
+  }
+
+  return $null
+}
+
 function Get-PidFileObservation {
   param(
     [Parameter(Mandatory = $true)]

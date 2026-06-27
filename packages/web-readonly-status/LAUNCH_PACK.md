@@ -21,6 +21,20 @@ bun run --cwd packages/web-readonly-status launch:status -- -TimeoutSec 5
 bun run --cwd packages/web-readonly-status launch:stop
 ```
 
+Separate local-only OpenCode UI helper on this PC:
+
+```powershell
+.\packages\web-readonly-status\scripts\start-opencode-local.ps1 -Password "choose-a-local-password"
+.\packages\web-readonly-status\scripts\stop-opencode-local.ps1
+```
+
+Equivalent Bun aliases:
+
+```powershell
+bun run --cwd packages/web-readonly-status opencode:local:start -- -Password "choose-a-local-password"
+bun run --cwd packages/web-readonly-status opencode:local:stop
+```
+
 ## URLs
 
 - LAN app URL: `http://192.168.50.202:4173/`
@@ -98,3 +112,17 @@ Same Wi-Fi/LAN requirement:
 
 The phone or second computer must be connected to the same local network as this
 PC. VPNs or guest networks may block LAN reachability.
+
+## Local OpenCode UI Notes
+
+The OpenCode helper is intentionally separate from the LAN read-only status app.
+
+- Local OpenCode URL: `http://127.0.0.1:4096/`
+- Default bind: `127.0.0.1:4096` only
+- No LAN bind
+- No firewall rule
+- Optional password via `-Password`
+- Browser auth username: `opencode`
+
+If you supply `-Password`, the browser will require the username above and the
+same password value you supplied when the helper started the server.

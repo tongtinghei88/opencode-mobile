@@ -73,6 +73,39 @@ service is down or a local HTTP request stalls.
 
 See `LAUNCH_PACK.md` for daily commands and troubleshooting.
 
+## Local OpenCode UI On This PC Only
+
+The read-only status app above is separate from OpenCode itself.
+
+If you want to open the actual OpenCode browser UI on this PC only, use the
+local-only helper:
+
+```powershell
+.\packages\web-readonly-status\scripts\start-opencode-local.ps1 -Password "choose-a-local-password"
+.\packages\web-readonly-status\scripts\stop-opencode-local.ps1
+```
+
+Equivalent Bun aliases:
+
+```powershell
+bun run --cwd packages/web-readonly-status opencode:local:start -- -Password "choose-a-local-password"
+bun run --cwd packages/web-readonly-status opencode:local:stop
+```
+
+Open this URL on the same PC:
+
+`http://127.0.0.1:4096/`
+
+Important notes:
+
+- This helper binds OpenCode only to `127.0.0.1`.
+- It does not bind to `192.168.50.202` or `0.0.0.0`.
+- It does not add firewall rules.
+- It does not start the read-only status launch pack.
+- With `-Password`, the browser uses HTTP Basic Auth.
+- The tested username is `opencode`; use the password you supplied to `-Password`.
+- PID files and logs stay outside the repo under `%TEMP%\opencode-local\`.
+
 Install dependencies once from the monorepo root:
 
 ```bash
