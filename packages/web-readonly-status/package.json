@@ -11,7 +11,11 @@
     "launch:status": "powershell -ExecutionPolicy Bypass -File ./scripts/status-readonly-status.ps1",
     "launch:stop": "powershell -ExecutionPolicy Bypass -File ./scripts/stop-readonly-status.ps1",
     "opencode:local:start": "powershell -ExecutionPolicy Bypass -File ./scripts/start-opencode-local.ps1",
+    "opencode:local:status": "powershell -ExecutionPolicy Bypass -File ./scripts/status-opencode-local.ps1",
     "opencode:local:stop": "powershell -ExecutionPolicy Bypass -File ./scripts/stop-opencode-local.ps1",
+    "routine:start": "powershell -ExecutionPolicy Bypass -File ./scripts/start-routine-local.ps1",
+    "routine:status": "powershell -ExecutionPolicy Bypass -File ./scripts/status-routine-local.ps1",
+    "routine:stop": "powershell -ExecutionPolicy Bypass -File ./scripts/stop-routine-local.ps1",
     "typecheck": "tsc --noEmit",
     "type-check": "tsc --noEmit",
     "lint": "eslint \"./src/**/*.{ts,tsx}\" --config ../../eslint.config.js"

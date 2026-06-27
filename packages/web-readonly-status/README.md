@@ -57,6 +57,14 @@ also rerunning the full production browser sanity check.
 Daily use on Windows PowerShell 5.1:
 
 ```powershell
+.\packages\web-readonly-status\scripts\start-routine-local.ps1 -OpenCodePassword "choose-a-local-password"
+.\packages\web-readonly-status\scripts\status-routine-local.ps1 -TimeoutSec 5
+.\packages\web-readonly-status\scripts\stop-routine-local.ps1
+```
+
+Read-only-only variants:
+
+```powershell
 .\packages\web-readonly-status\scripts\start-readonly-status.ps1
 .\packages\web-readonly-status\scripts\status-readonly-status.ps1 -TimeoutSec 5
 .\packages\web-readonly-status\scripts\stop-readonly-status.ps1
@@ -70,6 +78,23 @@ under `%TEMP%\web-readonly-status\`, adds no firewall rules, does not start
 `opencode serve`, and does not modify backend repo or adapter code. The status
 script supports `-TimeoutSec` so local diagnostics return promptly even when a
 service is down or a local HTTP request stalls.
+
+The routine launcher adds one convenience layer above that pack:
+
+- `start-routine-local.ps1` can start the read-only status app, the local-only OpenCode UI, or both.
+- `status-routine-local.ps1` checks both systems without hanging indefinitely.
+- `stop-routine-local.ps1` stops only the managed PID-file-backed processes and then prints final port status.
+
+The routine scripts preserve the same safety boundary:
+
+- Phone or LAN devices should open only `http://192.168.50.202:4173/`.
+- The approved adapter endpoint remains `http://192.168.50.202:8790/api/local/v0/summary`.
+- OpenCode remains PC-local only at `http://127.0.0.1:4096/`.
+- OpenCode Basic Auth username is `opencode`.
+- OpenCode password is the value supplied to `-OpenCodePassword` on the routine start script or `-Password` on the direct OpenCode helper.
+- No firewall rules are added.
+- No backend repo or adapter code is modified.
+- No LAN/mobile OpenCode access is enabled.
 
 See `LAUNCH_PACK.md` for daily commands and troubleshooting.
 
@@ -89,6 +114,7 @@ Equivalent Bun aliases:
 
 ```powershell
 bun run --cwd packages/web-readonly-status opencode:local:start -- -Password "choose-a-local-password"
+bun run --cwd packages/web-readonly-status opencode:local:status -- -TimeoutSec 5
 bun run --cwd packages/web-readonly-status opencode:local:stop
 ```
 
@@ -105,6 +131,14 @@ Important notes:
 - With `-Password`, the browser uses HTTP Basic Auth.
 - The tested username is `opencode`; use the password you supplied to `-Password`.
 - PID files and logs stay outside the repo under `%TEMP%\opencode-local\`.
+
+Equivalent Bun aliases for the routine launcher:
+
+```powershell
+bun run --cwd packages/web-readonly-status routine:start -- -OpenCodePassword "choose-a-local-password"
+bun run --cwd packages/web-readonly-status routine:status -- -TimeoutSec 5
+bun run --cwd packages/web-readonly-status routine:stop
+```
 
 Install dependencies once from the monorepo root:
 

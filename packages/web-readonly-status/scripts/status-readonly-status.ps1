@@ -1,7 +1,8 @@
 param(
   [ValidateRange(1, 30)]
   [int]$TimeoutSec = 3,
-  [switch]$VerboseChecks
+  [switch]$VerboseChecks,
+  [switch]$SkipGitStatus
 )
 
 $ErrorActionPreference = "Stop"
@@ -124,8 +125,8 @@ foreach ($port in $WarningPorts) {
   }
 }
 
-$repoRoot = git rev-parse --show-toplevel 2>$null
-if ($LASTEXITCODE -eq 0 -and $repoRoot) {
+$repoRoot = if (-not $SkipGitStatus) { git rev-parse --show-toplevel 2>$null } else { $null }
+if (-not $SkipGitStatus -and $LASTEXITCODE -eq 0 -and $repoRoot) {
   Write-Host ""
   Write-Host "Git status:"
   git status --short --branch

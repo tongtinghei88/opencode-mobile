@@ -8,12 +8,28 @@ from Windows PowerShell 5.1.
 From the repository root:
 
 ```powershell
+.\packages\web-readonly-status\scripts\start-routine-local.ps1 -OpenCodePassword "choose-a-local-password"
+.\packages\web-readonly-status\scripts\status-routine-local.ps1 -TimeoutSec 5
+.\packages\web-readonly-status\scripts\stop-routine-local.ps1
+```
+
+Read-only-only commands remain available:
+
+```powershell
 .\packages\web-readonly-status\scripts\start-readonly-status.ps1
 .\packages\web-readonly-status\scripts\status-readonly-status.ps1 -TimeoutSec 5
 .\packages\web-readonly-status\scripts\stop-readonly-status.ps1
 ```
 
 Equivalent Bun aliases:
+
+```powershell
+bun run --cwd packages/web-readonly-status routine:start -- -OpenCodePassword "choose-a-local-password"
+bun run --cwd packages/web-readonly-status routine:status -- -TimeoutSec 5
+bun run --cwd packages/web-readonly-status routine:stop
+```
+
+Read-only-only Bun aliases:
 
 ```powershell
 bun run --cwd packages/web-readonly-status launch:start
@@ -25,6 +41,7 @@ Separate local-only OpenCode UI helper on this PC:
 
 ```powershell
 .\packages\web-readonly-status\scripts\start-opencode-local.ps1 -Password "choose-a-local-password"
+.\packages\web-readonly-status\scripts\status-opencode-local.ps1 -TimeoutSec 5
 .\packages\web-readonly-status\scripts\stop-opencode-local.ps1
 ```
 
@@ -32,6 +49,7 @@ Equivalent Bun aliases:
 
 ```powershell
 bun run --cwd packages/web-readonly-status opencode:local:start -- -Password "choose-a-local-password"
+bun run --cwd packages/web-readonly-status opencode:local:status -- -TimeoutSec 5
 bun run --cwd packages/web-readonly-status opencode:local:stop
 ```
 
@@ -39,8 +57,10 @@ bun run --cwd packages/web-readonly-status opencode:local:stop
 
 - LAN app URL: `http://192.168.50.202:4173/`
 - Approved adapter endpoint: `http://192.168.50.202:8790/api/local/v0/summary`
+- Local OpenCode URL on this PC only: `http://127.0.0.1:4096/`
 
 Open the LAN app URL from phones or computers on the same Wi-Fi/LAN.
+Open the OpenCode URL only on this PC.
 
 ## Requirements
 
@@ -53,6 +73,7 @@ Open the LAN app URL from phones or computers on the same Wi-Fi/LAN.
 The scripts store PID files and logs outside the repo under
 `%TEMP%\web-readonly-status\`.
 The status script supports `-TimeoutSec` and returns bounded local status checks.
+The OpenCode local helper stores PID files and logs under `%TEMP%\opencode-local\`.
 
 ## Safety Behavior
 
@@ -63,6 +84,8 @@ The status script supports `-TimeoutSec` and returns bounded local status checks
 - The scripts do not add firewall rules.
 - The scripts do not modify the backend repo.
 - The scripts do not modify adapter server code.
+- The routine scripts do not expose OpenCode to LAN.
+- The routine scripts do not bind OpenCode to `192.168.50.202` or `0.0.0.0`.
 - The scripts fail closed if the IP is wrong, a required port is busy, the build
   fails, the adapter cannot start, or the preview cannot start.
 
@@ -126,3 +149,20 @@ The OpenCode helper is intentionally separate from the LAN read-only status app.
 
 If you supply `-Password`, the browser will require the username above and the
 same password value you supplied when the helper started the server.
+
+## Routine Launcher Notes
+
+Use the routine launcher when you want one daily command set for both systems:
+
+- `start-routine-local.ps1 -OpenCodePassword "..."`
+- `status-routine-local.ps1 -TimeoutSec 5`
+- `stop-routine-local.ps1`
+
+Optional flags:
+
+- `-SkipReadOnlyStatus` starts only local OpenCode.
+- `-SkipOpenCode` starts only the read-only status pack.
+
+The routine scripts reuse the existing read-only launch pack and the existing local OpenCode helper.
+They do not change the approved read-only endpoint, do not add direct browser access to `:4096`
+inside the read-only app, do not add firewall rules, and do not modify backend repo or adapter code.
