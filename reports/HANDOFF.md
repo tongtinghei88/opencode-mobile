@@ -1,5 +1,28 @@
 # opencode-mobile-fork-mainline Handoff
 
+## Shutdown note (2026-06-28 - Web Read-Only Status MVP v0.2.0 tagged)
+
+- **Final label:** `WEB_READONLY_STATUS_MVP_V0_2_0_TAGGED`
+- **Decision:** `PASS`
+- **Recommendation:** `USE_DAILY_LAUNCH_PACK_FOR_ROUTINE_ACCESS`
+- **Authoritative repo:** `C:\Codex-Recovery\opencode-mobile-fork-mainline`
+- **Branch:** `web-app-mainline`
+- **HEAD:** `9d17862d5d6b7311b065c4f67c93c588cfcb4cfd`
+- **Origin:** `origin/web-app-mainline` matches local HEAD.
+- **Release tag:** `web-readonly-status-mvp-v0.2.0` pushed to `origin`; peeled target is `9d17862d5d6b7311b065c4f67c93c588cfcb4cfd`.
+- **Previous release tag:** `web-readonly-status-mvp-v0.1.0` remains at `c8747b5508d87630da470652ce7a2aebf819629d`.
+- **Daily Launch Pack:** implemented, pushed, real-device checked, and tagged. Android and iPhone both passed page load, CONNECTED status, manual refresh, and visual layout checks at `http://192.168.50.202:4173/`.
+- **Cleanup:** launch pack stopped; ports `4173`, `8790`, `5173`, `4096`, `3000`, and `8081` free; no adapter/preview process remains.
+- **Reports in Google Drive:**
+  - `G:\我的雲端硬碟\Codex-Work\opencode app\reports\web-readonly-status-daily-use-launch-pack.md`
+  - `G:\我的雲端硬碟\Codex-Work\opencode app\reports\web-readonly-status-mvp-v0.2.0-tag.md`
+- **Current daily-use commands from repo root:**
+  - `.\packages\web-readonly-status\scripts\start-readonly-status.ps1`
+  - `.\packages\web-readonly-status\scripts\status-readonly-status.ps1`
+  - `.\packages\web-readonly-status\scripts\stop-readonly-status.ps1`
+- **Safety boundary unchanged:** app still only performs `GET http://192.168.50.202:8790/api/local/v0/summary` with `credentials: "omit"`; no polling, storage, auth, chat, terminal, git, provider, filesystem, or write actions.
+- **Next legal step:** use the daily launch pack for routine access, or plan a separately reviewed v0.3 scope. Any endpoint configurability, auth, polling, write action, direct `4096` path, or backend integration remains out of scope until explicitly approved.
+
 ## ⏯️ 最新狀態（2026-06-27 收工 — MVP v0.1.0 tagged + Real Device LAN Accepted）
 
 - Final labels: `WEB_READONLY_STATUS_MVP_V0_1_0_TAGGED` → `WEB_READONLY_STATUS_V0_1_0_REAL_DEVICE_LAN_ACCEPTED`
