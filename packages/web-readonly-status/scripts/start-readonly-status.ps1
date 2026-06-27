@@ -1,6 +1,10 @@
-param()
+param(
+  [ValidateRange(1, 30)]
+  [int]$TimeoutSec = 5
+)
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "launch-pack-common.ps1")
 
 $ExpectedIp = "192.168.50.202"
 $AdapterPort = 8790
@@ -20,8 +24,7 @@ function Fail($Message) {
 }
 
 function Get-RepoRoot {
-  $scriptDir = Split-Path -Parent $MyInvocation.ScriptName
-  return (Resolve-Path (Join-Path $scriptDir "..\..\..")).Path
+  return (Resolve-Path (Join-Path $PSScriptRoot "..\..\..")).Path
 }
 
 function Test-ExpectedIp {
@@ -30,16 +33,13 @@ function Test-ExpectedIp {
   return [bool]$matches
 }
 
-function Test-PortFree($Port) {
-  $listener = Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue
-  return -not [bool]$listener
-}
-
 function Wait-ForPort($Port, $TimeoutSeconds) {
   $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
   while ((Get-Date) -lt $deadline) {
-    $listener = Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue
-    if ($listener) { return $true }
+    $portMap = Get-PortObservationMap -Ports @($Port) -TimeoutSec ([Math]::Min($TimeoutSec, 5))
+    if ($portMap[$Port].State -eq "LISTENING") {
+      return $true
+    }
     Start-Sleep -Milliseconds 300
   }
   return $false
@@ -69,11 +69,12 @@ if (-not (Test-Path -LiteralPath $AdapterPath)) {
   Fail "Adapter file not found: $AdapterPath"
 }
 
-if (-not (Test-PortFree $AdapterPort)) {
+$portMap = Get-PortObservationMap -Ports @($AdapterPort, $PreviewPort) -TimeoutSec $TimeoutSec
+if ($portMap[$AdapterPort].State -eq "LISTENING") {
   Fail "Port $AdapterPort is already listening. Refusing to start."
 }
 
-if (-not (Test-PortFree $PreviewPort)) {
+if ($portMap[$PreviewPort].State -eq "LISTENING") {
   Fail "Port $PreviewPort is already listening. Refusing to start."
 }
 
@@ -114,7 +115,7 @@ try {
   $env:PORT = $oldPort
 }
 
-if (-not (Wait-ForPort $AdapterPort 10)) {
+if (-not (Wait-ForPort -Port $AdapterPort -TimeoutSeconds 10)) {
   if ($adapterProcess -and -not $adapterProcess.HasExited) {
     Stop-Process -Id $adapterProcess.Id -Force -ErrorAction SilentlyContinue
   }
@@ -137,12 +138,12 @@ $previewArgs = @(
 $previewProcess = Start-Process -FilePath $bunCommand.Source `
   -ArgumentList $previewArgs `
   -WorkingDirectory $RepoRoot `
-    -RedirectStandardOutput $PreviewLog `
-    -RedirectStandardError $PreviewErrorLog `
+  -RedirectStandardOutput $PreviewLog `
+  -RedirectStandardError $PreviewErrorLog `
   -WindowStyle Hidden `
   -PassThru
 
-if (-not (Wait-ForPort $PreviewPort 15)) {
+if (-not (Wait-ForPort -Port $PreviewPort -TimeoutSeconds 15)) {
   if ($previewProcess -and -not $previewProcess.HasExited) {
     Stop-Process -Id $previewProcess.Id -Force -ErrorAction SilentlyContinue
   }
@@ -161,3 +162,5 @@ Write-Host "App URL:     http://$ExpectedIp`:$PreviewPort/"
 Write-Host "PID files:   $StateDir"
 Write-Host "Logs:        $StateDir"
 Write-Host "Open http://$ExpectedIp`:$PreviewPort/ from devices on the same Wi-Fi/LAN."
+Write-Host "Status:      .\packages\web-readonly-status\scripts\status-readonly-status.ps1 -TimeoutSec $TimeoutSec"
+Write-Host "Stop:        .\packages\web-readonly-status\scripts\stop-readonly-status.ps1"

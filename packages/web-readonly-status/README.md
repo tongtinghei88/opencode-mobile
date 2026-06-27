@@ -58,7 +58,7 @@ Daily use on Windows PowerShell 5.1:
 
 ```powershell
 .\packages\web-readonly-status\scripts\start-readonly-status.ps1
-.\packages\web-readonly-status\scripts\status-readonly-status.ps1
+.\packages\web-readonly-status\scripts\status-readonly-status.ps1 -TimeoutSec 5
 .\packages\web-readonly-status\scripts\stop-readonly-status.ps1
 ```
 
@@ -67,7 +67,9 @@ the approved adapter endpoint
 `http://192.168.50.202:8790/api/local/v0/summary`. It requires this PC to hold
 IP `192.168.50.202`, requires ports `4173` and `8790`, stores PID files and logs
 under `%TEMP%\web-readonly-status\`, adds no firewall rules, does not start
-`opencode serve`, and does not modify backend repo or adapter code.
+`opencode serve`, and does not modify backend repo or adapter code. The status
+script supports `-TimeoutSec` so local diagnostics return promptly even when a
+service is down or a local HTTP request stalls.
 
 See `LAUNCH_PACK.md` for daily commands and troubleshooting.
 

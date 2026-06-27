@@ -9,7 +9,7 @@ From the repository root:
 
 ```powershell
 .\packages\web-readonly-status\scripts\start-readonly-status.ps1
-.\packages\web-readonly-status\scripts\status-readonly-status.ps1
+.\packages\web-readonly-status\scripts\status-readonly-status.ps1 -TimeoutSec 5
 .\packages\web-readonly-status\scripts\stop-readonly-status.ps1
 ```
 
@@ -17,7 +17,7 @@ Equivalent Bun aliases:
 
 ```powershell
 bun run --cwd packages/web-readonly-status launch:start
-bun run --cwd packages/web-readonly-status launch:status
+bun run --cwd packages/web-readonly-status launch:status -- -TimeoutSec 5
 bun run --cwd packages/web-readonly-status launch:stop
 ```
 
@@ -38,6 +38,7 @@ Open the LAN app URL from phones or computers on the same Wi-Fi/LAN.
 
 The scripts store PID files and logs outside the repo under
 `%TEMP%\web-readonly-status\`.
+The status script supports `-TimeoutSec` and returns bounded local status checks.
 
 ## Safety Behavior
 
@@ -79,6 +80,13 @@ Adapter unreachable:
 Run the status script and inspect `%TEMP%\web-readonly-status\adapter.log`.
 The adapter endpoint must be reachable at
 `http://192.168.50.202:8790/api/local/v0/summary`.
+
+Status appears slow:
+
+Run `.\packages\web-readonly-status\scripts\status-readonly-status.ps1 -TimeoutSec 5`.
+The script now reports `LISTENING`, `NOT LISTENING`, `TIME_WAIT ONLY`,
+`HTTP OK`, `HTTP FAILED`, `HTTP TIMEOUT`, `PID FILE MISSING`, and
+`STALE PID FILE` without waiting indefinitely for local status checks.
 
 Windows firewall or network profile issue:
 

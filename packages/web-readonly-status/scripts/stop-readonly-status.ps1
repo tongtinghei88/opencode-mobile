@@ -1,6 +1,7 @@
 param()
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "launch-pack-common.ps1")
 
 $StateDir = Join-Path $env:TEMP "web-readonly-status"
 $PidFiles = @(
@@ -78,12 +79,10 @@ Start-Sleep -Milliseconds 500
 
 Write-Host ""
 Write-Host "Port status:"
+$portMap = Get-PortObservationMap -Ports $Ports -TimeoutSec 5
 foreach ($port in $Ports) {
-  $listener = Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue
-  if ($listener) {
-    $pids = ($listener | Select-Object -ExpandProperty OwningProcess -Unique) -join ", "
-    Write-Host "Port $port listening (PID: $pids)"
-  } else {
-    Write-Host "Port $port free"
-  }
+  $observation = $portMap[$port]
+  $addresses = if ($observation.LocalAddresses.Count -gt 0) { $observation.LocalAddresses -join ", " } else { "n/a" }
+  $pids = if ($observation.OwningProcesses.Count -gt 0) { $observation.OwningProcesses -join ", " } else { "n/a" }
+  Write-Host "Port ${port}: $($observation.State) ($($observation.Details); addresses: $addresses; pids: $pids)"
 }
